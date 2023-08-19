@@ -12,6 +12,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Render dashboard page
+router.get('/dashboard', async (req, res) => {
+  try {
+    res.render('dashboard');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred');
+  }
+});
+
 // Render login page
 router.get('/login', async (req, res) => {
   try {
@@ -35,7 +45,7 @@ router.get('/register', async (req, res) => {
 // Post Login
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/dashboard',
-  failureRedirect: 'login',
+  failureRedirect: '/login',
   failureFlash: true
 }));
 
