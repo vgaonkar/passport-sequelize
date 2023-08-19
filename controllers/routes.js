@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const passport = require('passport');
 const User = require('../models/User');
+const {checkAuthenticated} = require('../passport-config');
 
 // Render home page
-router.get('/', async (req, res) => {
+router.get('/', checkAuthenticated, async (req, res) => {
   try {
     res.render('home');
   } catch (err) {

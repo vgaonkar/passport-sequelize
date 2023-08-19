@@ -4,7 +4,7 @@ const sequelize = require('./config/connection');
 const routes = require('./controllers');
 const exphbs = require('express-handlebars');
 const passport = require('passport');
-const initializePassport = require('./passport-config');
+const {initializePassport} = require('./passport-config');
 const flash = require('express-flash');
 const session = require('express-session');
 

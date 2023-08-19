@@ -18,7 +18,14 @@ const authenticateUser = async (email, password, done) => {
   }
 };
 
-function initialize(passport) {
+function checkAuthenticated (req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
+function initializePassport(passport) {
   passport.use(
     new LocalStrategy(
       {
@@ -39,4 +46,7 @@ function initialize(passport) {
   });
 }
 
-module.exports = initialize;
+module.exports = {
+  initializePassport,
+  checkAuthenticated
+}
