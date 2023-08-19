@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const passport = require('passport');
 const User = require('../models/User');
-const {checkAuthenticated} = require('../passport-config');
+const {checkAuthenticated, checkNotAuthenticated} = require('../passport-config');
 
 // Render home page
-router.get('/', checkAuthenticated, async (req, res) => {
+router.get('/', checkNotAuthenticated, async (req, res) => {
   try {
     res.render('home');
   } catch (err) {
@@ -14,7 +14,7 @@ router.get('/', checkAuthenticated, async (req, res) => {
 });
 
 // Render dashboard page
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', checkAuthenticated, async (req, res) => {
   try {
     res.render('dashboard', {user: req.user});
   } catch (err) {
@@ -24,7 +24,7 @@ router.get('/dashboard', async (req, res) => {
 });
 
 // Render login page
-router.get('/login', async (req, res) => {
+router.get('/login', checkNotAuthenticated, async (req, res) => {
   try {
     res.render('login');
   } catch (err) {
@@ -34,7 +34,7 @@ router.get('/login', async (req, res) => {
 });
 
 // Render register page
-router.get('/register', async (req, res) => {
+router.get('/register', checkNotAuthenticated, async (req, res) => {
   try {
     res.render('register');
   } catch (err) {
@@ -44,14 +44,14 @@ router.get('/register', async (req, res) => {
 });
 
 // Post Login
-router.post('/login', passport.authenticate('local', {
+router.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/dashboard',
   failureRedirect: '/login',
   failureFlash: true
 }));
 
 // Post Register
-router.post('/register', async (req, res) => {
+router.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
     await User.create( {
       firstName: req.body.firstName,
@@ -63,6 +63,14 @@ router.post('/register', async (req, res) => {
   } catch (err) {
     res.status(500).redirect('/register');
   }
+});
+
+// Logout
+router.delete('/logout', checkAuthenticated, (req, res) => {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    res.redirect('/login');
+  });
 });
 
 module.exports = router;

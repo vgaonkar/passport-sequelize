@@ -7,6 +7,7 @@ const passport = require('passport');
 const {initializePassport} = require('./passport-config');
 const flash = require('express-flash');
 const session = require('express-session');
+const methodOverride = require('method-override');
 
 initializePassport(passport);
 
@@ -29,6 +30,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(methodOverride('_method'))
 
 //routes middleware
 app.use(routes);
