@@ -1,7 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const sequelize = require('./config/connection');
 const routes = require('./controllers');
 const exphbs = require('express-handlebars');
+const passport = require('passport');
+const initializePassport = require('./passport-config');
+const flash = require('express-flash');
+const session = require('express-session');
+const { configDotenv } = require('dotenv');
+
+initializePassport(passport);
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,9 +21,17 @@ app.set('view engine', 'handlebars');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(flash());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
 
 //routes middleware
 app.use(routes);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Start the server
 sequelize.sync({ force: false }).then(() => {

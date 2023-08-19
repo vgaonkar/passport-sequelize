@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const passport = require('passport');
 const User = require('../models/User');
 
 // Render home page
@@ -32,19 +33,16 @@ router.get('/register', async (req, res) => {
 });
 
 // Post Login
-router.post('/login', async (req, res) => {
-  try {
-    console.log("in Login post");
-    res.status(200).redirect('/dashboard');
-  } catch (err) {
-    res.status(500).redirect('/login');
-  }
-});
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: 'login',
+  failureFlash: true
+}));
 
 // Post Register
 router.post('/register', async (req, res) => {
   try {
-    let user = await User.create( {
+    await User.create( {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,

@@ -1,4 +1,7 @@
 <h1>Login</h1>
+{{#if messages.error}}
+  {{messages.error}}
+{{/if}}
 <form method="POST" action='/login'>
   <section>
     <label for='email'>Email</label>
