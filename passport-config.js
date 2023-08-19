@@ -12,7 +12,7 @@ const authenticateUser = async (email, password, done) => {
     if (!validPassword) {
       return done(null, false, { message: 'Incorrect email or password' });
     }
-    return done(null, userData);
+    return done(null, userData.get({plain:true}));
   } catch (err) {
     return done(err);
   }
@@ -35,7 +35,7 @@ function initialize(passport) {
 
   passport.deserializeUser(async (email, done) => {
     const userData = await User.findOne({ where: { email: email }});
-    return done(null, userData)
+    return done(null, userData.get({plain:true}));
   });
 }
 
