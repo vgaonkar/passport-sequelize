@@ -7,7 +7,6 @@ const passport = require('passport');
 const initializePassport = require('./passport-config');
 const flash = require('express-flash');
 const session = require('express-session');
-const { configDotenv } = require('dotenv');
 
 initializePassport(passport);
 
@@ -21,17 +20,18 @@ app.set('view engine', 'handlebars');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(flash());
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 //routes middleware
 app.use(routes);
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Start the server
 sequelize.sync({ force: false }).then(() => {

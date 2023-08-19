@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // Render dashboard page
 router.get('/dashboard', async (req, res) => {
   try {
-    res.render('dashboard');
+    res.render('dashboard', {user: req.user});
   } catch (err) {
     console.error(err);
     res.status(500).send('An error occurred');
